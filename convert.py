@@ -12,7 +12,7 @@ import logging
 # parse arguments
 parser = argparse.ArgumentParser(description="Convert existing modules to Encounter+ compatible file")
 parser.add_argument("path", metavar="PATH", help="a path to .mod, .xml, .db3 file to convert")
-parser.add_argument("--parser", default="fg", help="data parser (fg|beyond)")
+parser.add_argument("--parser", default="fg", help="data parser (fg)")
 parser.add_argument("--debug", action="store_true", default=False, help="enable debug logs")
 parser.add_argument("--name", help="name")
 parser.add_argument("--author", help="author")
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 from slugify import slugify
 from models import Module
-from parsers import FantasyGrounds, Beyond
+from parsers import FantasyGrounds
 
 if __name__ == "__main__":
     # create module
@@ -50,10 +50,6 @@ if __name__ == "__main__":
         # FantasyGrounds
         dp = FantasyGrounds()
         module.description = "Converted from FG"
-    elif args.parser == "beyond":
-        # Beyond
-        dp = Beyond()
-        module.description = "Converted from Beyond"
 
     # process data in path
     dp.process(args.path, module)
