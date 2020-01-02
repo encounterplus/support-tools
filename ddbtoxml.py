@@ -9,6 +9,7 @@ import tempfile
 import shutil
 import re
 import base64
+from json import JSONDecodeError
 
 def getJSON(theurl):
 	rawjson = ""
@@ -313,7 +314,7 @@ def genXML(character):
 	if "campaign" in character and character["campaign"] is not None:
 		party = character["campaign"]["name"]
 	background = ""
-	if "background" in character and character["background"] is not None:
+	if "background" in character and character["background"] is not None and character["background"]["definition"] is not None:
 		background = character["background"]["definition"]["name"]
 		bg_def = character["background"]["definition"]
 	feats = []
@@ -363,6 +364,20 @@ def genXML(character):
 	characterXML += "\t</player>\n"
 	return characterXML
 
+def findURLS(fp):
+	fp.seek(0, 0)
+	characters = []
+	regex = re.compile("<a[^>]*href=\"(/profile/.*/[0-9]+)\"[^>]*class=\"ddb-campaigns-character-card-header-upper-details-link\"[^>]*>")
+	for line in fp:
+		m = regex.search(line)
+		if m:
+			characterurl = m.group(1)
+			if not characterurl.startswith("https://www.dndbeyond.com/"):
+				characters.append("https://www.dndbeyond.com"+characterurl)
+			else:
+				characters.append(characterurl)
+	return characters
+
 def main():
 	tempdir = tempfile.mkdtemp(prefix="ddbtoxml_")
 	comependiumxml = os.path.join(tempdir, "compendium.xml")
@@ -392,12 +407,26 @@ def main():
 			readin.close()
 		except:
 			pass
+	characters = []
 	for i in range(len(args)):
-		if i == 0 and len(args) > 1:
+		if args[i] == __file__:
 			continue
-		if  i == 0 or args[i] == '-' or os.path.isfile(args[i]):
-			if os.path.isfile(args[i]):
-				with open(args[i],"r") as jsonfile:
+		if os.path.isfile(args[i]):
+				with open(args[i]) as infile:
+					try:
+						json.load(infile)
+						characters.append(args[i])
+					except JSONDecodeError:
+						found = findURLS(infile)
+						characters.extend(found)
+		else:
+			characters.append(args[i])
+	if len(characters) == 0:
+		characters.append("-")
+	for i in range(len(characters)):
+		if  characters[i] == '-' or os.path.isfile(characters[i]):
+			if os.path.isfile(characters[i]):
+				with open(characters[i],"r") as jsonfile:
 					charjson = json.loads(jsonfile.read())
 			else:
 				charjson = json.loads(sys.stdin.read())
@@ -406,7 +435,7 @@ def main():
 			else:
 				character = charjson
 		else:
-			character = getJSON(args[i])
+			character = getJSON(characters[i])
 		if character is not None:
 			xmloutput = genXML(character)
 			with open(comependiumxml,mode='a',encoding='utf-8') as comependium:
