@@ -86,8 +86,13 @@ def genXML(character):
 	initiative = math.floor((stat_dex - 10)/2)
 	equipment = []
 	for equip in character["inventory"]:
-		for i in range(equip["quantity"]):
-			equipment.append(equip["definition"]["name"])
+#		for i in range(equip["quantity"]):
+#			equipment.append(equip["definition"]["name"])
+#		if equip["quantity"] > 1:
+#			equipment.append("{} (x{:d})".format(equip["definition"]["name"],equip["quantity"]))
+#		else:
+#			equipment.append(equip["definition"]["name"])
+		equipment.append(equip["definition"]["name"])
 		if equip["equipped"] == True and "armorClass" in equip["definition"]:
 			armorclass += equip["definition"]["armorClass"]
 	if armorclass == 0:
