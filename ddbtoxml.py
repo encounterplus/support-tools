@@ -347,8 +347,7 @@ def genXML(character):
 	characterXML += "\t\t<int>{}</int>\n".format(stat_int)
 	characterXML += "\t\t<wis>{}</wis>\n".format(stat_wis)
 	characterXML += "\t\t<cha>{}</cha>\n".format(stat_cha)
-	if "readonlyUrl" in character and character["readonlyUrl"] is not None:
-		characterXML += "\t\t<descr>{}\n&lt;i&gt;&lt;a href=&quot;https://www.dndbeyond.com/profile/username/characters/{}&quot;&gt;Imported from D&amp;D Beyond&lt;/a&gt;&lt;/i&gt;</descr>\n".format(appearance,character["id"])
+	characterXML += "\t\t<descr>{}\n&lt;i&gt;&lt;a href=&quot;https://www.dndbeyond.com/profile/username/characters/{}&quot;&gt;Imported from D&amp;D Beyond&lt;/a&gt;&lt;/i&gt;</descr>\n".format(appearance,character["id"])
 	characterXML += "\t\t<party>{}</party>\n".format(party)
 	characterXML += "\t\t<faction>{}</faction>\n".format("")
 	characterXML += "\t\t<passive>{}</passive>\n".format(skill["Perception"]+10)
