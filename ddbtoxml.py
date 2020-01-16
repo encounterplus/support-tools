@@ -86,7 +86,15 @@ def genXML(character):
 	initiative = math.floor((stat_dex - 10)/2)
 	equipment = []
 	for equip in character["inventory"]:
-		for i in range(equip["quantity"]):
+#		for i in range(equip["quantity"]):
+#			equipment.append(equip["definition"]["name"])
+#		if equip["quantity"] > 1:
+#			equipment.append("{} (x{:d})".format(equip["definition"]["name"],equip["quantity"]))
+#		else:
+#			equipment.append(equip["definition"]["name"])
+		if "armor" in equip["definition"]["type"].lower() and "armor" not in equip["definition"]["name"].lower():
+			equipment.append(equip["definition"]["name"] + " Armor")
+		else:
 			equipment.append(equip["definition"]["name"])
 		if equip["equipped"] == True and "armorClass" in equip["definition"]:
 			armorclass += equip["definition"]["armorClass"]
@@ -326,6 +334,8 @@ def genXML(character):
 	ideals = character["traits"]["ideals"]
 	flaws = character["traits"]["flaws"]
 	appearance = character["traits"]["appearance"]
+	if appearance is None:
+		appearance = ""
 	characterXML += "\t\t<race>{}</race>\n".format(race)
 	characterXML += "\t\t<initiative>{}</initiative>\n".format(initiative)
 	characterXML += "\t\t<ac>{}</ac>\n".format(armorclass)
@@ -337,7 +347,7 @@ def genXML(character):
 	characterXML += "\t\t<int>{}</int>\n".format(stat_int)
 	characterXML += "\t\t<wis>{}</wis>\n".format(stat_wis)
 	characterXML += "\t\t<cha>{}</cha>\n".format(stat_cha)
-	characterXML += "\t\t<desc>{}</desc>\n".format(appearance)
+	characterXML += "\t\t<descr>{}\n&lt;i&gt;&lt;a href=&quot;https://www.dndbeyond.com/profile/username/characters/{}&quot;&gt;Imported from D&amp;D Beyond&lt;/a&gt;&lt;/i&gt;</descr>\n".format(appearance,character["id"])
 	characterXML += "\t\t<party>{}</party>\n".format(party)
 	characterXML += "\t\t<faction>{}</faction>\n".format("")
 	characterXML += "\t\t<passive>{}</passive>\n".format(skill["Perception"]+10)
