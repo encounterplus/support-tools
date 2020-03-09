@@ -31,17 +31,10 @@ optional arguments:
 ./convert.py ~/test.mod --name "Test Module"
 ```
 
-## Dependencies
-
-```
-natsort, slugify
-```
-
 ## Python3 install
 
 ```
-pip3 install natsort
-pip3 install python-slugify
+pip3 install -r requirements.txt
 ```
 
 ## Known issues
