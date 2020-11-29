@@ -186,7 +186,7 @@ class FantasyGrounds(Parser):
 
                     markers.append(marker)
 
-                if markers:
+                if markers or node.find("./image/gridsize") != None:
                     # if markers not empty, its a map
                     map = Map()
                     map.parent = group
